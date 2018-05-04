@@ -223,7 +223,9 @@ func queryResultData(db *sql.DB, query string, retrieveColumns bool, args ...int
 
 	columns := []string{}
 	rows, err := db.Query(query, args...)
-	defer rows.Close()
+	if rows != nil {
+    defer rows.Close()
+  }
 	if err != nil && err != sql.ErrNoRows {
 		return EmptyResultData, columns, log.Errore(err)
 	}
