@@ -205,8 +205,10 @@ func QueryRowsMap(db *sql.DB, query string, on_row func(RowMap) error, args ...i
 	}()
 
 	rows, err := db.Query(query, args...)
-	defer rows.Close()
-	if err != nil && err != sql.ErrNoRows {
+	if rows != nil {
+		defer rows.Close()
+	}
+  if err != nil && err != sql.ErrNoRows {
 		return log.Errore(err)
 	}
 	err = ScanRowsToMaps(rows, on_row)
