@@ -21,11 +21,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/openark/golib/log"
 	"strconv"
 	"strings"
 	"sync"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/openark/golib/log"
 )
 
 // RowMap represents one row in a result set. Its objective is to allow
@@ -204,8 +205,10 @@ func QueryRowsMap(db *sql.DB, query string, on_row func(RowMap) error, args ...i
 	}()
 
 	rows, err := db.Query(query, args...)
-	defer rows.Close()
-	if err != nil && err != sql.ErrNoRows {
+	if rows != nil {
+		defer rows.Close()
+	}
+  if err != nil && err != sql.ErrNoRows {
 		return log.Errore(err)
 	}
 	err = ScanRowsToMaps(rows, on_row)
@@ -223,7 +226,9 @@ func queryResultData(db *sql.DB, query string, retrieveColumns bool, args ...int
 
 	columns := []string{}
 	rows, err := db.Query(query, args...)
-	defer rows.Close()
+	if rows != nil {
+		defer rows.Close()
+	}
 	if err != nil && err != sql.ErrNoRows {
 		return EmptyResultData, columns, err
 	}
