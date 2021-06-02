@@ -277,7 +277,7 @@ func QueryRowsMap(db *sql.DB, query string, on_row func(RowMap) error, args ...i
 func queryResultData(db *sql.DB, query string, retrieveColumns bool, args ...interface{}) (resultData ResultData, columns []string, err error) {
 	defer func() {
 		if derr := recover(); derr != nil {
-			err = errors.New(fmt.Sprintf("QueryRowsMap unexpected error: %+v", derr))
+			err = errors.New(fmt.Sprintf("queryResultData unexpected error: %+v", derr))
 		}
 	}()
 
